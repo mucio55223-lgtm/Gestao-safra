@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Relatório de Recepção de Trigo - {{ now.strftime('%d/%m/%Y %H:%M') }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        .kpi-card { 
+            border: 1px solid #ccc; 
+            padding: 15px; 
+            margin-bottom: 20px; 
+            border-radius: 8px;
+            text-align: center;
+        }
+        .kpi-card h3 { font-size: 1.5rem; }
+        .kpi-card p { color: #6c757d; margin-bottom: 5px; }
+        .chart-container { 
+            margin-bottom: 30px; 
+            padding: 15px; 
+            border: 1px solid #e9ecef; 
+            border-radius: 8px;
+        }
+        .status-ok { background-color: #d4edda; color: #198754; }
+        .status-andamento { background-color: #fff3cd; color: #ffc107; }
+        .status-falta-receber { background-color: #f8d7da; color: #dc3545; }
+        .status-prev-invalida { background-color: #f0f0f0; color: #6c757d; }
+        .positive-diff { color: #198754; font-weight: bold; }
+        .negative-diff { color: #dc3545; font-weight: bold; }
+        .neutral-diff { color: #ffc107; font-weight: bold; }
+        .chart-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <h1 class="mb-4">Relatório de Recepção de Trigo 🌾</h1>
+        <p class="text-muted">Gerado em: {{ now.strftime('%d/%m/%Y %H:%M:%S') }}</p>
+
+        <hr>
+
+        <h2>Indicadores Chave (KPIs)</h2>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="kpi-card">
+                    <p>Total Previsto (SC)</p>
+                    <h3>{{ kpis.total_previsto }}</h3>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="kpi-card">
+                    <p>Total Recebido (SC)</p>
+                    <h3>{{ kpis.total_recebido }}</h3>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="kpi-card">
+                    <p>Progresso Geral (%)</p>
+                    <h3>{{ kpis.progresso_geral }}</h3>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="kpi-card">
+                    <p>Cultivares Cadastradas</p>
+                    <h3>{{ kpis.num_cultivares }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="kpi-card">
+                    <p>Excedente Total (SC)</p>
+                    <h3>{{ kpis.total_excedente }}</h3>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="kpi-card">
+                    <p>Déficit Total (SC)</p>
+                    <h3>{{ kpis.total_deficit }}</h3>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="kpi-card">
+                    <p>Cultivares com Excedente</p>
+                    <h3>{{ kpis.cultivares_excedente }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>Gráficos Interativos (Plotly)</h2>
+        <p class="text-muted">Os gráficos abaixo são gerados com o Plotly e podem ser manipulados após o carregamento da página.</p>
+
+        <!-- Gráficos Principais -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <div class="chart-title">{{ bar_title }}</div>
+                    {{ bar_chart_html|safe }}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <div class="chart-title">{{ pie_title }}</div>
+                    {{ treemap_chart_html|safe }}
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="chart-container">
+                    <div class="chart-title">{{ sankey_title }}</div>
+                    {{ sankey_chart_html|safe }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Novos Gráficos de Análise -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <div class="chart-title">{{ diff_title }}</div>
+                    {{ diff_chart_html|safe }}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <div class="chart-title">{{ percent_title }}</div>
+                    {{ percent_chart_html|safe }}
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <div class="chart-title">{{ category_title }}</div>
+                    {{ category_chart_html|safe }}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <div class="chart-title">{{ top_title }}</div>
+                    {{ top_chart_html|safe }}
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="chart-container">
+                    <div class="chart-title">{{ timeline_title }}</div>
+                    {{ timeline_chart_html|safe }}
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>Tabela Detalhada de Dados</h2>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Cultivar</th>
+                        <th>Categoria</th>
+                        <th>Prev. Colheita</th>
+                        <th>Prev. Receb</th>
+                        <th>Recepção (SC)</th>
+                        <th>%</th>
+                        <th>Status</th>
+                        <th>Diferença (SC)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{ table_rows|safe }}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</body>
+</html>
