@@ -1,0 +1,20 @@
+{
+    "dashboardTitle": "Gest\u00e3o de Recep\u00e7\u00e3o - Safra 25/25 \ud83c\udf3e",
+    "theme": {
+        "primary": "#198754",
+        "success": "#198754",
+        "warning": "#ffc107",
+        "danger": "#dc3545"
+    },
+    "tabNames": {
+        "dashboard-tab": "\ud83d\udcca Dashboard & Progresso Individual",
+        "avancado-tab": "\ud83d\ude80 Gr\u00e1ficos & Analise",
+        "tabela-tab": "Dados",
+        "cadastro-tab": "\u2795 Cadastro & Op\u00e7\u00f5es"
+    },
+    "graphTitles": {
+        "barGroupedTitle": "1. Previsto vs. Recebido",
+        "treemapTitle": "2. Propor\u00e7\u00e3o do Recebido",
+        "sankeyTitle": "3. Fluxo de Volume"
+    }
+}
